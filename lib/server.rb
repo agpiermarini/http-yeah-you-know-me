@@ -7,7 +7,6 @@ class Server
 
   def initialize
     @server = TCPServer.new(9292)
-    @count = 0
   end
 
   # Method to accept incoming requests
@@ -18,11 +17,11 @@ class Server
     while line = client.gets and !line.chomp.empty?   # set up parser class?
         request_lines << line.chomp
     end
-    puts "Got this request:"
-    puts request_lines.inspect
     @count += 1
     @request = RequestParser.new(request_lines)
-    puts @request.debug_display
+    puts "Got this request:"
+    puts request_lines.inspect
+    puts @request.debug_info
     response
     start
   end

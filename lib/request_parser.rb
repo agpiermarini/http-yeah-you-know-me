@@ -36,7 +36,7 @@ class RequestParser
     end
   end
 
-  def debug_display
+  def debug_info
     "
      Verb:     #{@verb}
      Path:     #{@path}
