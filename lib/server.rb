@@ -1,5 +1,6 @@
 require 'socket'
 require 'pry'
+require './lib/request_parser'
 
 class Server
   attr_accessor :client
@@ -19,8 +20,9 @@ class Server
     end
     puts "Got this request:"
     puts request_lines.inspect
-    # Response.new(request_lines)
     @count += 1
+    @request = RequestParser.new(request_lines)
+    puts @request.debug_display
     response
     start
   end
