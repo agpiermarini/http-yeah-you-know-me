@@ -5,10 +5,10 @@ require 'faraday'
 require 'socket'
 
 class ServerTest < Minitest::Test
-  def test_it_GETs
-    request = Faraday.get "http://127.0.0.1:9292/"
+  def test_it_sends_response
+    response = Faraday.get "http://127.0.0.1:9292/"
 
-    assert request.body.include?("GET")
+    assert response.body.include?("Hello")
   end
 
 end
