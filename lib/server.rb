@@ -1,12 +1,14 @@
 require 'socket'
 require 'pry'
 require './lib/request_parser'
+require './lib/responder'
 
 class Server
   attr_accessor :client
 
   def initialize
     @server = TCPServer.new(9292)
+    @count = 0
   end
 
   # Method to accept incoming requests
@@ -14,14 +16,13 @@ class Server
     @client = @server.accept
     puts "Ready for a request"
     request_lines = []
-    while line = client.gets and !line.chomp.empty?   # set up parser class?
+    while line = client.gets and !line.chomp.empty?
         request_lines << line.chomp
     end
     @count += 1
     @request = RequestParser.new(request_lines)
-    puts "Got this request:"
-    puts request_lines.inspect
-    puts @request.debug_info
+    puts "Got this request:\n#{request_lines.inspect}\n\n"
+    puts "Debug information:\n#{@request.debug_info}"
     response
     start
   end

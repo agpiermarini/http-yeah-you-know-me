@@ -18,21 +18,16 @@ class RequestParser
 
   def parse(request_lines)
     request_lines[1..-1].each do |line|
-      prefix, content = line.split(': ')
-        if prefix == "Host"
-          @host, @port = content.split(":")
-          @origin = @host
-        elsif prefix == "Origin"
-          @origin = content
-        elsif prefix == "Accept"
-          @accept = content
-        elsif prefix == "Accept-Encoding"
-          @accept_encoding = content
-        elsif prefix == "Accept-Language"
-          @accept_language = content
-        else
-          nil
-        end
+      prefix, content = line.downcase.split(': ')
+      case prefix
+      when "host"   then @host, @port = content.split(":")
+      when "origin" then @origin = content
+      when "accept" then @accept = content
+      when "accept-encoding" then @accept_encoding = content
+      when "accept-language" then @accept_language = content
+      else nil
+      end
+      @origin ||= @host
     end
   end
 
@@ -46,8 +41,18 @@ class RequestParser
      Origin:   #{@origin}
      Accept:   #{@accept_encoding},#{@accept};#{@accept_language}"
   end
-
-  # find what is common to all verbs and parse at initialize
-  # remainder parsed in methods below...if statements, case statements?
-
 end
+
+
+#   @origin = @host
+# elsif prefix == "origin"
+#   @origin = content
+# elsif prefix == "accept"
+#   @accept = content
+# elsif prefix == "accept-encoding"
+#   @accept_encoding = content
+# elsif prefix == "accept-language"
+#   @accept_language = content
+# else
+#   nil
+# end
