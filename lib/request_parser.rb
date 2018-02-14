@@ -15,6 +15,7 @@ class RequestParser
   def initialize(request_lines)
     @verb, @path, @protocol = request_lines[0].split(" ")
     @path, @parameters = @path.split("?")
+    parse_parameters if !@parameters.nil?
     parse_request(request_lines)
   end
 
@@ -33,12 +34,8 @@ class RequestParser
     end
   end
 
-  # def isolate_parameters
-  #   @parameters.split("&")
-  # end
-
   def parse_parameters
-    @parameters.split("&").map do |parameter|
+    @parameters = @parameters.split("&").map do |parameter|
       parameter.split("=")
     end
   end

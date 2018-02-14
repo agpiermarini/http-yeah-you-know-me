@@ -8,18 +8,18 @@ class Server
 
   def initialize
     @server = TCPServer.new(9292)
-    @request_lines = []
     @count = 0
   end
 
   def start
     puts "Awaiting request..."
+    request_lines = []
     @client = @server.accept
-    while line = client.gets and !line.chomp.empty?
-        @request_lines << line.chomp
+    while line = @client.gets and !line.chomp.empty?
+        request_lines << line.chomp
     end
     @count += 1
-    @request = RequestParser.new(@request_lines)
+    @request = RequestParser.new(request_lines)
     puts "Got this request:\n\n#{request_lines.inspect}\n\n"
     response
     start if @request.path != "/shutdown"
@@ -35,8 +35,8 @@ class Server
                "server: ruby",
                "content-type: text/html; charset=iso-8859-1",
                "content-length: #{output.length}\r\n\r\n"].join("\r\n")
-    client.puts headers
-    client.puts output
-    client.close
+    @client.puts headers
+    @client.puts output
+    @client.close
   end
 end

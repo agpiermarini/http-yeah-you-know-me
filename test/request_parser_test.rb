@@ -86,7 +86,6 @@ class RequestParserTest < Minitest::Test
 
   def test_it_prints_debug_information_post
     parser = RequestParser.new(@post_request)
-    binding.pry
     expected = "</pre>" + ("\n") + ("\t") +
     "Verb:    POST
     Path:     /
@@ -101,12 +100,14 @@ class RequestParserTest < Minitest::Test
   end
 
   def test_it_isolates_parameters #delete this test if keeping path/param variable setting function in initialize
+    skip
     parser = RequestParser.new(@search_request)
 
     assert_equal "word=hello&word2=goodbye", parser.parameters
   end
 
   def test_it_parses_parameters
+    skip
     parser = RequestParser.new(@search_request)
     expected = [["word", "hello"], ["word2", "goodbye"]]
 
