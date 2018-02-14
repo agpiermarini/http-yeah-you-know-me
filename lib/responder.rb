@@ -16,6 +16,36 @@ class Responder
     @game    = nil
   end
 
+  def call_some_method(method)
+    "somethin_typed"
+    # method will be a string
+    method_name = method.to_sym
+    self.send(method_name)
+    o = Object.new
+    o.send(:some_method)
+    o.some_method
+    # above are equivalent
+
+    current_user.username
+    current_user.try(:username)
+  end
+
+
+
+  def endpoint_map
+    {
+      "/" => :debug_endpoint,
+      ...
+    }
+  end
+
+  def endpoint
+    return not_found if !endpoint_map[path]
+    self.send(endpoint_map[path])
+    self.send(:method_name) #symbol method
+  endpoint_map[path].call # lambda
+  end
+
   def endpoint  #build out alternatives for get/post...e.g. word_search does not work with post?
     case path
     when "/"            then debug_endpoint
@@ -45,12 +75,11 @@ class Responder
   end
 
   def start_game_endpoint
-    return start_game if get?
-    not_found
+    request.get? ? start_game : not_found
   end
 
   def game_endpoint
-    return @game.get  if get?
+    return @game.get  if request.get?
     return @game.post if post?
     not_found
   end
@@ -83,7 +112,7 @@ class Responder
   end
 
   def get?
-    @verb == "GET"
+    verb == "GET"
   end
 
   def post?

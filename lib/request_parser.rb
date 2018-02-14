@@ -19,6 +19,16 @@ class RequestParser
     parse_request(request_lines)
   end
 
+
+  def set_verb_path_protocol(line)
+    @verb, @path, @protocol = request_...
+  rescue
+    @verb = nil
+  end
+
+  def set_request(request_lines)
+  end
+
   def parse_request(request_lines)
     request_lines[1..-1].each do |line|
       prefix, content = line.split(': ')
@@ -41,6 +51,10 @@ class RequestParser
     when "accept-encoding" then @accept_encoding = content
     when "accept-language" then @accept_language = content
     else nil end
+  end
+
+  def get?
+    verb == ...
   end
 
   def debug_info

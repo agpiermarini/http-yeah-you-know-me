@@ -9,6 +9,7 @@ class Server
   def initialize
     @server = TCPServer.new(9292)
     @count  = 0
+    @request = RequestParser.new
   end
 
   def start
