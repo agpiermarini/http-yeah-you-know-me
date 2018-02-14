@@ -22,15 +22,19 @@ class RequestParser
   def parse_request(request_lines)
     request_lines[1..-1].each do |line|
       prefix, content = line.split(': ')
-      case prefix.downcase
-      when "host"   then @host, @port = content.split(":")
-      when "origin" then @origin = content
-      when "accept" then @accept = content
-      when "accept-encoding" then @accept_encoding = content
-      when "accept-language" then @accept_language = content
-      else nil end
-      @origin ||= @host
+      set_variable(prefix, content)
     end
+    @origin ||= @host
+  end
+
+  def set_variable(prefix, content)
+    case prefix.downcase
+    when "host"            then @host, @port = content.split(":")
+    when "origin"          then @origin = content
+    when "accept"          then @accept = content
+    when "accept-encoding" then @accept_encoding = content
+    when "accept-language" then @accept_language = content
+    else nil end
   end
 
   def parse_parameters
