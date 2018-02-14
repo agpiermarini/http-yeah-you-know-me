@@ -8,28 +8,27 @@ class Server
 
   def initialize
     @server = TCPServer.new(9292)
+    @request_lines = []
     @count = 0
   end
 
-  # Method to accept incoming requests
   def start
+    puts "Awaiting request..."
     @client = @server.accept
-    puts "Ready for a request"
-    request_lines = []
     while line = client.gets and !line.chomp.empty?
-        request_lines << line.chomp
+        @request_lines << line.chomp
     end
     @count += 1
-    @request = RequestParser.new(request_lines)
-    puts "Got this request:\n#{request_lines.inspect}\n\n"
-    puts "Debug information:\n#{@request.debug_info}"
+    @request = RequestParser.new(@request_lines)
+    puts "Got this request:\n\n#{request_lines.inspect}\n\n"
     response
-    start
+    start if @request.path != "/shutdown"
   end
 
   def response
-    puts "Sending response."
-    response = "<pre>" + "Hello, World! (#{@count})" + ("\n") + "</pre>"   #set up response/headers class? formatter essentially?
+    puts "Sending response.\n"
+    responder = Responder.new(@request, @count)
+    response = "<pre>" + "#{responder.output}" + "<pre>"
     output = "<html><head></head><body>#{response}</body></html>"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",

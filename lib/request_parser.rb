@@ -1,8 +1,9 @@
 require 'pry'
 
 class RequestParser
-  attr_reader   :verb,
+  attr_accessor :verb,
                 :path,
+                :parameters,
                 :protocol,
                 :host,
                 :port,
@@ -13,13 +14,14 @@ class RequestParser
 
   def initialize(request_lines)
     @verb, @path, @protocol = request_lines[0].split(" ")
-    parse(request_lines)
+    @path, @parameters = @path.split("?")
+    parse_request(request_lines)
   end
 
-  def parse(request_lines)
+  def parse_request(request_lines)
     request_lines[1..-1].each do |line|
-      prefix, content = line.downcase.split(': ')
-      case prefix
+      prefix, content = line.split(': ')
+      case prefix.downcase
       when "host"   then @host, @port = content.split(":")
       when "origin" then @origin = content
       when "accept" then @accept = content
@@ -31,15 +33,26 @@ class RequestParser
     end
   end
 
+  # def isolate_parameters
+  #   @parameters.split("&")
+  # end
+
+  def parse_parameters
+    @parameters.split("&").map do |parameter|
+      parameter.split("=")
+    end
+  end
+
   def debug_info
-    "
-     Verb:     #{@verb}
-     Path:     #{@path}
-     Protocol: #{@protocol}
-     Host:     #{@host}
-     Port:     #{@port}
-     Origin:   #{@origin}
-     Accept:   #{@accept_encoding},#{@accept};#{@accept_language}"
+    "</pre>" + ("\n") + ("\t") +
+    "Verb:    #{@verb}
+    Path:     #{@path}
+    Protocol: #{@protocol}
+    Host:     #{@host}
+    Port:     #{@port}
+    Origin:   #{@origin}
+    Accept:   #{@accept_encoding},#{@accept};#{@accept_language}" +
+    "</pre>"
   end
 end
 
