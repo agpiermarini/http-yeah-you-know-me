@@ -8,14 +8,14 @@ class Server
 
   def initialize
     @server = TCPServer.new(9292)
-    @count = 0
+    @count  = 0
   end
 
   def start
     puts "Awaiting request..."
     request_lines = []
     @client = @server.accept
-    while line = @client.gets and !line.chomp.empty?
+    while line = client.gets and !line.chomp.empty?
         request_lines << line.chomp
     end
     @count += 1
@@ -28,15 +28,15 @@ class Server
   def response
     puts "Sending response.\n"
     responder = Responder.new(@request, @count)
-    response = "<pre>" + "#{responder.output}" + "<pre>"
+    response = "<pre>" + "#{responder.endpoint}" + "<pre>"
     output = "<html><head></head><body>#{response}</body></html>"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                "server: ruby",
                "content-type: text/html; charset=iso-8859-1",
                "content-length: #{output.length}\r\n\r\n"].join("\r\n")
-    @client.puts headers
-    @client.puts output
-    @client.close
+    client.puts headers
+    client.puts output
+    client.close
   end
 end
