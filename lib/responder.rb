@@ -45,23 +45,23 @@ class Responder
   end
 
   def start_game_endpoint
-    case verb
-    when "GET" then start_game
-    else not_found end
+    return start_game if get?
+    not_found
   end
 
   def game_endpoint
-    case verb
-    when "GET"  then @game.get
-    when "POST" then @game.post
-    else not_found end
+    return @game.get  if get?
+    return @game.post if post?
+    not_found
   end
 
   def word_search_endpoint
-    case verb
-    when "GET"  then search_result
-    when "POST" then not_found
-    else not_found end
+    return search_result if get?
+    not_found
+  end
+
+  def not_found
+    "404: Not Found :("
   end
 
   def search_result
@@ -70,9 +70,6 @@ class Responder
     end.join(",\n")
   end
 
-  def not_found
-    "404: Not Found :("
-  end
 
   def start_game
     @game = Game.new
@@ -83,5 +80,13 @@ class Responder
     words = File.read("/usr/share/dict/words")
     return "a" if words.include?(word.downcase)
     "not a"
+  end
+
+  def get?
+    @verb == "GET"
+  end
+
+  def post?
+    @verb == "POST"
   end
 end

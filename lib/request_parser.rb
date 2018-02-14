@@ -27,6 +27,12 @@ class RequestParser
     @origin ||= @host
   end
 
+  def parse_parameters
+    @parameters = @parameters.split("&").map do |parameter|
+      parameter.split("=")
+    end
+  end
+
   def set_variable(prefix, content)
     case prefix.downcase
     when "host"            then @host, @port = content.split(":")
@@ -35,12 +41,6 @@ class RequestParser
     when "accept-encoding" then @accept_encoding = content
     when "accept-language" then @accept_language = content
     else nil end
-  end
-
-  def parse_parameters
-    @parameters = @parameters.split("&").map do |parameter|
-      parameter.split("=")
-    end
   end
 
   def debug_info

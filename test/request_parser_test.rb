@@ -113,4 +113,6 @@ class RequestParserTest < Minitest::Test
 
     assert_equal expected, parser.parse_parameters
   end
+
+  # build out test for variable set function
 end

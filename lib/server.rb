@@ -19,7 +19,7 @@ class Server
         request_lines << line.chomp
     end
     @count += 1
-    @request = RequestParser.new(request_lines)
+    @request = RequestParser.new(request_lines)               # move up? self, so as to be able to call server.request_lines?
     puts "Got this request:\n\n#{request_lines.inspect}\n\n"
     response
     start if @request.path != "/shutdown"
