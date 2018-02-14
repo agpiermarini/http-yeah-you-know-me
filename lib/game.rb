@@ -8,4 +8,10 @@ class Game
   def welcome
     "Good luck!"
   end
+
+  def get
+  end
+
+  def post
+  end
 end

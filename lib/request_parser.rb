@@ -28,8 +28,7 @@ class RequestParser
       when "accept" then @accept = content
       when "accept-encoding" then @accept_encoding = content
       when "accept-language" then @accept_language = content
-      else nil
-      end
+      else nil end
       @origin ||= @host
     end
   end

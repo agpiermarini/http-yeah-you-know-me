@@ -179,4 +179,6 @@ class ResponderTest < Minitest::Test
 
     assert_equal "404: Not Found :(", responder.endpoint
   end
+
+  ###build out tests for extracted endpoint_methods
 end

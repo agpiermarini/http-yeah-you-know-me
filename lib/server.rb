@@ -37,6 +37,6 @@ class Server
                "content-length: #{output.length}\r\n\r\n"].join("\r\n")
     client.puts headers
     client.puts output
-    client.close
+    client.close #unless game is not nil? should i keep cycle open?
   end
 end

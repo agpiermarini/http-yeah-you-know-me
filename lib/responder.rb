@@ -5,26 +5,27 @@ require './lib/game'
 require 'pry'
 
 class Responder
-  attr_reader :path
+  attr_reader :path,
+              :verb
 
   def initialize(request, count)
     @request = request
-    @path    = @request.path
+    @verb    = request.verb
+    @path    = request.path
     @count   = count
     @game    = nil
   end
 
   def endpoint  #build out alternatives for get/post...e.g. word_search does not work with post?
     case path
-    when "/"         then debug_endpoint
-    when "/hello"    then hello_endpoint
-    when "/datetime" then datetime_endpoint
-    when "/shutdown" then shutdown_endpoint
-    when "/game"     then nil
+    when "/"            then debug_endpoint
+    when "/hello"       then hello_endpoint
+    when "/datetime"    then datetime_endpoint
+    when "/shutdown"    then shutdown_endpoint
+    when "/game"        then game_endpoint
     when "/start_game"  then start_game_endpoint
     when "/word_search" then word_search_endpoint
-    else "404: Not Found :("
-    end
+    else not_found end
   end
 
   def debug_endpoint
@@ -44,14 +45,38 @@ class Responder
   end
 
   def start_game_endpoint
-    @game = Game.new
-    @game.welcome
+    case verb
+    when "GET" then start_game
+    else not_found end
+  end
+
+  def game_endpoint
+    case verb
+    when "GET"  then @game.get
+    when "POST" then @game.post
+    else not_found end
   end
 
   def word_search_endpoint
+    case verb
+    when "GET"  then search_result
+    when "POST" then not_found
+    else not_found end
+  end
+
+  def search_result
     @request.parameters.map do |word|
        "#{word[1].upcase} is #{include_word?(word[1])} known word"
     end.join(",\n")
+  end
+
+  def not_found
+    "404: Not Found :("
+  end
+
+  def start_game
+    @game = Game.new
+    @game.welcome
   end
 
   def include_word?(word)
