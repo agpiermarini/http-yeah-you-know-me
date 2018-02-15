@@ -1,0 +1,10 @@
+require 'simplecov'
+SimpleCov.start
+require 'pry'
+require 'faraday'
+require 'socket'
+require 'Date'
+require 'Time'
+require 'minitest'
+require 'minitest/autorun'
+require 'minitest/pride'
