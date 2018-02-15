@@ -64,14 +64,14 @@ class Responder
     "Total Requests: #{request.count}"
   end
 
-  def start_game_endpoint
-    return start_game if request.post?
-    not_found
-  end
-
   def word_search_endpoint
     word_search = WordSearch.new
     return word_search.search_result(request.parameters) if request.get?
+    not_found
+  end
+
+  def start_game_endpoint
+    return start_game if request.post?
     not_found
   end
 
@@ -82,39 +82,24 @@ class Responder
     "You must first go to http://127.0.0.1:9292/start_game to start a game."
   end
 
-  def read_body
-    client.read(request.content_length)
-  end
-
-  def guess
-    read_body.split[-2].to_i
-  end
-
-  def submit_guess
-    @game.post(guess)
-  end
-
-
-  def not_found
-    "404: Not Found :("
-  end
-
-  # def search_result
-  #   request.parameters.map do |word|
-  #      "#{word[1].upcase} is #{include_word?(word[1])} known word"
-  #   end.join(",\n")
-  # end
-
   def start_game
     @game = Game.new
     @game.welcome
   end
 
-  # def include_word?(word)
-  #   words = File.read("/usr/share/dict/words")
-  #   return "a" if words.include?(word.downcase)
-  #   "not a"
-  # end
+  def read_guess
+    content = client.read(request.content_length)
+    content.split[-2].to_i
+  end
+
+  def submit_guess
+    @game.post(read_guess)
+  end
+
+  def not_found
+    "404: Not Found :("
+  end
+
 end
 
 
@@ -129,4 +114,16 @@ end
 #   when "/start_game"  then start_game_endpoint
 #   when "/word_search" then word_search_endpoint
 #   else not_found end
+# end
+
+# def search_result
+#   request.parameters.map do |word|
+#      "#{word[1].upcase} is #{include_word?(word[1])} known word"
+#   end.join(",\n")
+# end
+
+# def include_word?(word)
+#   words = File.read("/usr/share/dict/words")
+#   return "a" if words.include?(word.downcase)
+#   "not a"
 # end

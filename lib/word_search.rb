@@ -7,7 +7,6 @@ class WordSearch
 
   def include_word?(word)
     words = File.read("/usr/share/dict/words")
-    return "a" if words.include?(word.downcase)
-    "not a"
+    words.include?(word.downcase) ? "a" : "not a"
   end
 end
