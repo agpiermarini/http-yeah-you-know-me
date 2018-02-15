@@ -41,8 +41,8 @@ class RequestParserTest < Minitest::Test
   end
 
   def test_it_parses_verb_path_protocol
-    parser = RequestParser.new(@search_request)
-    parser.parse_verb_path_protocol
+    parser = RequestParser.new
+    parser.parse_verb_path_protocol(@search_request)
 
     assert_equal "GET", parser.verb
     assert_equal "/word_search", parser.path
@@ -51,8 +51,8 @@ class RequestParserTest < Minitest::Test
   end
 
   def test_it_parses_parameters
-    parser = RequestParser.new(@search_request)
-    parser.parse_verb_path_protocol
+    parser = RequestParser.new
+    parser.parse_verb_path_protocol(@search_request)
     parser.parse_parameters
 
     expected = [["word", "hello"], ["word2", "goodbye"]]
@@ -61,9 +61,9 @@ class RequestParserTest < Minitest::Test
   end
 
   def test_it_parses_remainder
-    parser = RequestParser.new(@search_request)
-    parser.parse_verb_path_protocol
-    parser.parse_remainder
+    parser = RequestParser.new
+    parser.parse_verb_path_protocol(@search_request)
+    parser.parse_remainder(@search_request)
 
     assert_equal "127.0.0.1", parser.host
     assert_equal "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop", parser.origin
@@ -73,8 +73,8 @@ class RequestParserTest < Minitest::Test
   end
 
   def test_it_parses_entire_get_request
-    parser = RequestParser.new(@get_request)
-    parser.parse_all
+    parser = RequestParser.new
+    parser.parse_all(@get_request)
 
     assert_equal "GET", parser.verb
     assert_equal "/", parser.path
@@ -88,8 +88,8 @@ class RequestParserTest < Minitest::Test
   end
 
   def test_it_parses_entire_post_request
-    parser = RequestParser.new(@post_request)
-    parser.parse_all
+    parser = RequestParser.new
+    parser.parse_all(@post_request)
 
     assert_equal "POST", parser.verb
     assert_equal "/", parser.path
@@ -103,16 +103,16 @@ class RequestParserTest < Minitest::Test
   end
 
   def test_get?
-    parser = RequestParser.new(@get_request)
-    parser.parse_all
+    parser = RequestParser.new
+    parser.parse_all(@get_request)
 
     assert parser.get?
     refute parser.post?
   end
 
   def test_post?
-    parser = RequestParser.new(@post_request)
-    parser.parse_all
+    parser = RequestParser.new
+    parser.parse_all(@post_request)
 
     assert parser.post?
     refute  parser.get?

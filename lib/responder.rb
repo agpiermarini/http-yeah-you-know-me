@@ -7,7 +7,8 @@ require 'pry'
 class Responder
   attr_reader :path,
               :verb,
-              :request
+              :request,
+              :count
 
   def initialize(request, count)
     @request = request
@@ -45,7 +46,7 @@ class Responder
   end
 
   def hello_endpoint
-    "Hello, World! (#{@count})"
+    "Hello, World! (#{count})"
   end
 
   def datetime_endpoint
@@ -53,7 +54,7 @@ class Responder
   end
 
   def shutdown_endpoint
-    "Total Requests: #{@count}"
+    "Total Requests: #{count}"
   end
 
   def start_game_endpoint
@@ -77,7 +78,7 @@ class Responder
   end
 
   def search_result
-    @request.parameters.map do |word|
+    request.parameters.map do |word|
        "#{word[1].upcase} is #{include_word?(word[1])} known word"
     end.join(",\n")
   end

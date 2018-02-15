@@ -123,8 +123,8 @@ class ResponderTest < Minitest::Test
   end
 
   def test_it_handles_no_endpoint
-    request = RequestParser.new(@request_1)
-    request.parse_all
+    request = RequestParser.new
+    request.parse_all(@request_1)
     responder = Responder.new(request, 1)
 
 
@@ -132,16 +132,16 @@ class ResponderTest < Minitest::Test
   end
 
   def test_it_handles_hello_endpoint
-    request = RequestParser.new(@request_2)
-    request.parse_all
+    request = RequestParser.new
+    request.parse_all(@request_2)
     responder = Responder.new(request, 1)
 
     assert_equal "Hello, World! (1)", responder.endpoint
   end
 
   def test_it_handles_datetime_endpoint
-    request = RequestParser.new(@request_3)
-    request.parse_all
+    request = RequestParser.new
+    request.parse_all(@request_3)
     responder = Responder.new(request, 1)
     expected = "#{Date.today.strftime("%I:%M%p on %A, %B %-d, %Y")}"
 
@@ -149,8 +149,8 @@ class ResponderTest < Minitest::Test
   end
 
   def test_it_handles_word_search_endpoint_with_one_included_word
-    request = RequestParser.new(@request_4)
-    request.parse_all
+    request = RequestParser.new
+    request.parse_all(@request_4)
     responder = Responder.new(request, 1)
     expected = "HELLO is a known word"
 
@@ -158,8 +158,8 @@ class ResponderTest < Minitest::Test
   end
 
   def test_it_handles_word_search_endpoint_with_one_excluded_word
-    request = RequestParser.new(@request_5)
-    request.parse_all
+    request = RequestParser.new
+    request.parse_all(@request_5)
     responder = Responder.new(request, 1)
     expected = "PROGRAMMIN is not a known word"
 
@@ -167,8 +167,8 @@ class ResponderTest < Minitest::Test
   end
 
   def test_it_handles_word_search_endpoint_with_multiple_words
-    request = RequestParser.new(@request_6)
-    request.parse_all
+    request = RequestParser.new
+    request.parse_all(@request_6)
     responder = Responder.new(request, 1)
     expected = "HELLO is a known word,\nCONCINNITY is a known word,\nPROGRAMMIN is not a known word"
 
@@ -176,24 +176,24 @@ class ResponderTest < Minitest::Test
   end
 
   def test_it_handles_shutdown_endpoint
-    request = RequestParser.new(@request_7)
-    request.parse_all
+    request = RequestParser.new
+    request.parse_all(@request_7)
     responder = Responder.new(request, 1)
 
     assert_equal "Total Requests: 1", responder.endpoint
   end
 
   def test_it_handles_start_game_endpoint
-    request = RequestParser.new(@request_8)
-    request.parse_all
+    request = RequestParser.new
+    request.parse_all(@request_8)
     responder = Responder.new(request, 1)
 
     assert_equal "Good luck!", responder.endpoint
   end
 
   def test_it_handles_all_other_endpoints
-    request = RequestParser.new(@request_9)
-    request.parse_all
+    request = RequestParser.new
+    request.parse_all(@request_9)
     responder = Responder.new(request, 1)
 
     assert_equal "404: Not Found :(", responder.endpoint

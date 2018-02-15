@@ -4,34 +4,36 @@ require './lib/request_parser'
 require './lib/responder'
 
 class Server
-  attr_reader :request,
+  attr_reader :server,
+              :request,
               :responder
-  attr_accessor :client
+
+  attr_accessor :client,
+                :count
 
   def initialize
     @server = TCPServer.new(9292)
     @request = RequestParser.new
-    @responder = Responder.new(nil)
     @count  = 0
   end
 
   def start
     puts "Awaiting request..."
     request_lines = []
-    @client = @server.accept
+    @client = server.accept
     while line = client.gets and !line.chomp.empty?
         request_lines << line.chomp
     end
     @count += 1
-    request.parse_all
+    request.parse_all(request_lines)
     puts "Got this request:\n\n#{request_lines.inspect}\n\n"
     response
-    start if @request.path != "/shutdown"
+    start if request.path != "/shutdown"
   end
 
   def response
+    @responder = Responder.new(request, count)
     puts "Sending response.\n"
-    responder = Responder.new(@request, @count)
     response = "<pre>" + "#{responder.endpoint}" + "<pre>"
     output = "<html><head></head><body>#{response}</body></html>"
     headers = ["http/1.1 200 ok",

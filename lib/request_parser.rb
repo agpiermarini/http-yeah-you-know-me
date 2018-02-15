@@ -15,17 +15,17 @@ class RequestParser
 
   attr_accessor :parameters
 
-  def initialize(request_lines)
-    @request_lines = request_lines
-  end
+  # def initialize
+  #   @request_lines = request_lines
+  # end
 
-  def parse_all
-    parse_verb_path_protocol
+  def parse_all(request_lines)
+    parse_verb_path_protocol(request_lines)
     parse_parameters if !parameters.nil?
-    parse_remainder
+    parse_remainder(request_lines)
   end
 
-  def parse_verb_path_protocol
+  def parse_verb_path_protocol(request_lines)
     @verb, @path, @protocol = request_lines[0].split(" ")
     @path, @parameters = @path.split("?")
   end
@@ -36,7 +36,7 @@ class RequestParser
     end
   end
 
-  def parse_remainder
+  def parse_remainder(request_lines)
     request_lines[1..-1].each do |line|
       prefix, content = line.split(': ')
       set_variable(prefix, content)
