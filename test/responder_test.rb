@@ -1,10 +1,9 @@
 require 'minitest/autorun'
 require 'minitest/pride'
-require 'Date'
-require 'Time'
 require './lib/request_parser'
 require './lib/responder'
 require 'faraday'
+require 'Date'
 require 'pry'
 
 class ResponderTest < Minitest::Test

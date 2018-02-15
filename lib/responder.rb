@@ -1,6 +1,5 @@
 require 'socket'
 require 'Date'
-require 'Time'
 require './lib/request_parser'
 require './lib/word_search'
 require './lib/game'
@@ -99,7 +98,6 @@ class Responder
   def not_found
     "404: Not Found :("
   end
-
 end
 
 

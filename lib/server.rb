@@ -1,7 +1,7 @@
 require 'socket'
-require 'pry'
 require './lib/request_parser'
 require './lib/responder'
+require 'pry'
 
 class Server
   attr_reader :server,
