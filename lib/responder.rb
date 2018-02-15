@@ -8,20 +8,24 @@ require 'pry'
 class Responder
   attr_reader :path,
               :verb,
-              :server
+              :server,
+              :request,
+              :client
 
   def initialize(server)
     @server = server
+    @request = server.request
+    @client = server.client
     @game = nil
   end
 
-  def request
-    server.request
-  end
-
-  def client
-    server.client
-  end
+  # def request
+  #   server.request
+  # end
+  #
+  # def client
+  #   server.client
+  # end
 
   def endpoint_map
     {
@@ -75,7 +79,7 @@ class Responder
   end
 
   def game_endpoint
-    return @game.get  if request.get?
+    return @game.get if request.get?
     return submit_guess if request.post?
     rescue
     "You must first go to http://127.0.0.1:9292/start_game to start a game."
