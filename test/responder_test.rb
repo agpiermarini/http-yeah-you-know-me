@@ -177,6 +177,14 @@ class ResponderTest < Minitest::Test
     assert request.body.include?("Good luck!")
   end
 
+  def test_it_handles_get_game_endpoint
+    Faraday.post "http://127.0.0.1:9292/start_game"
+    request = Faraday.get "http://127.0.0.1:9292/game"
+
+    assert request.body.include?("Total guesses:")
+    assert request.body.include?("Your last guess was:")
+  end
+
   def test_it_handles_all_other_endpoints
     request = Faraday.get "http://127.0.0.1:9292/doesnotexist"
 

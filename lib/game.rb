@@ -14,7 +14,7 @@ class Game
   end
 
   def get
-    return "You haven't guessed yet!" if guess_counter == 0
+    # return "You haven't guessed yet!" if guess_counter == 0
     "Total guesses: #{guess_counter}" + ("\n") +
     "Your last guess was: #{last_guess}, which is #{guess_feedback}"
   end
