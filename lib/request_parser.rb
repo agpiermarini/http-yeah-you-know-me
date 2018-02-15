@@ -11,15 +11,16 @@ class RequestParser
               :origin,
               :encoding,
               :accept,
-              :language
+              :language,
+              :count,
+              :parameters
 
-  attr_accessor :parameters
-
-  # def initialize
-  #   @request_lines = request_lines
-  # end
+  def initialize
+    @count = 0
+  end
 
   def parse_all(request_lines)
+    @count += 1
     parse_verb_path_protocol(request_lines)
     parse_parameters if !parameters.nil?
     parse_remainder(request_lines)

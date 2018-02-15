@@ -8,13 +8,12 @@ class Server
               :request,
               :responder
 
-  attr_accessor :client,
-                :count
-
+  attr_accessor :client
+  
   def initialize
     @server = TCPServer.new(9292)
     @request = RequestParser.new
-    @count  = 0
+    @responder = Responder.new(@request)
   end
 
   def start
@@ -24,7 +23,6 @@ class Server
     while line = client.gets and !line.chomp.empty?
         request_lines << line.chomp
     end
-    @count += 1
     request.parse_all(request_lines)
     puts "Got this request:\n\n#{request_lines.inspect}\n\n"
     response
@@ -32,7 +30,7 @@ class Server
   end
 
   def response
-    @responder = Responder.new(request, count)
+    responder.endpoint
     puts "Sending response.\n"
     response = "<pre>" + "#{responder.endpoint}" + "<pre>"
     output = "<html><head></head><body>#{response}</body></html>"

@@ -7,12 +7,10 @@ require 'pry'
 class Responder
   attr_reader :path,
               :verb,
-              :request,
-              :count
+              :request
 
-  def initialize(request, count)
+  def initialize(request)
     @request = request
-    @count   = count
     @game    = nil
   end
 
@@ -46,7 +44,7 @@ class Responder
   end
 
   def hello_endpoint
-    "Hello, World! (#{count})"
+    "Hello, World! (#{request.count})"
   end
 
   def datetime_endpoint
@@ -54,7 +52,7 @@ class Responder
   end
 
   def shutdown_endpoint
-    "Total Requests: #{count}"
+    "Total Requests: #{request.count}"
   end
 
   def start_game_endpoint
@@ -65,7 +63,8 @@ class Responder
   def game_endpoint
     return @game.get  if request.get?
     return @game.post if request.post?
-    not_found
+    rescue
+    "You must first go to http://127.0.0.1:9292/start_game to start a game."
   end
 
   def word_search_endpoint
