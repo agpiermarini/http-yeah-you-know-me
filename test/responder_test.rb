@@ -103,25 +103,37 @@ class ResponderTest < Minitest::Test
                   "Accept: */*",
                   "Accept-Encoding: gzip, deflate, br",
                   "Accept-Language: en-US,en;q=0.9"]
+
+    @debug_info =
+    "</pre>" + ("\n") + ("\t") +
+    "Verb:    GET
+    Path:     /
+    Protocol: HTTP/1.1
+    Host:     127.0.0.1
+    Port:     9292
+    Origin:   127.0.0.1
+    Accept:   gzip, deflate, br,*/*;en-US,en;q=0.9" +
+    "</pre>"
   end
 
   def test_it_exists
-    request = RequestParser.new(@request_1)
-    responder = Responder.new(request, 1)
+    responder = Responder.new(nil, 1)
 
     assert_instance_of Responder, responder
   end
 
   def test_it_handles_no_endpoint
     request = RequestParser.new(@request_1)
+    request.parse_all
     responder = Responder.new(request, 1)
 
 
-    assert_equal request.debug_info, responder.endpoint
+    assert_equal @debug_info.length, responder.endpoint.length
   end
 
   def test_it_handles_hello_endpoint
     request = RequestParser.new(@request_2)
+    request.parse_all
     responder = Responder.new(request, 1)
 
     assert_equal "Hello, World! (1)", responder.endpoint
@@ -129,6 +141,7 @@ class ResponderTest < Minitest::Test
 
   def test_it_handles_datetime_endpoint
     request = RequestParser.new(@request_3)
+    request.parse_all
     responder = Responder.new(request, 1)
     expected = "#{Date.today.strftime("%I:%M%p on %A, %B %-d, %Y")}"
 
@@ -137,6 +150,7 @@ class ResponderTest < Minitest::Test
 
   def test_it_handles_word_search_endpoint_with_one_included_word
     request = RequestParser.new(@request_4)
+    request.parse_all
     responder = Responder.new(request, 1)
     expected = "HELLO is a known word"
 
@@ -145,6 +159,7 @@ class ResponderTest < Minitest::Test
 
   def test_it_handles_word_search_endpoint_with_one_excluded_word
     request = RequestParser.new(@request_5)
+    request.parse_all
     responder = Responder.new(request, 1)
     expected = "PROGRAMMIN is not a known word"
 
@@ -153,6 +168,7 @@ class ResponderTest < Minitest::Test
 
   def test_it_handles_word_search_endpoint_with_multiple_words
     request = RequestParser.new(@request_6)
+    request.parse_all
     responder = Responder.new(request, 1)
     expected = "HELLO is a known word,\nCONCINNITY is a known word,\nPROGRAMMIN is not a known word"
 
@@ -161,6 +177,7 @@ class ResponderTest < Minitest::Test
 
   def test_it_handles_shutdown_endpoint
     request = RequestParser.new(@request_7)
+    request.parse_all
     responder = Responder.new(request, 1)
 
     assert_equal "Total Requests: 1", responder.endpoint
@@ -168,6 +185,7 @@ class ResponderTest < Minitest::Test
 
   def test_it_handles_start_game_endpoint
     request = RequestParser.new(@request_8)
+    request.parse_all
     responder = Responder.new(request, 1)
 
     assert_equal "Good luck!", responder.endpoint
@@ -175,6 +193,7 @@ class ResponderTest < Minitest::Test
 
   def test_it_handles_all_other_endpoints
     request = RequestParser.new(@request_9)
+    request.parse_all
     responder = Responder.new(request, 1)
 
     assert_equal "404: Not Found :(", responder.endpoint

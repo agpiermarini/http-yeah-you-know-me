@@ -30,3 +30,27 @@ client.puts output
 puts ["Wrote this response:", headers, output].join("\n")
 #client.close
 puts "\nResponse complete, exiting."
+
+
+
+# instead of case statement...
+# def call_some_method(method)
+#   "somethin_typed"
+#   # method will be a string
+#   method_name = method.to_sym
+#   self.send(method_name)
+#   o = Object.new
+#   o.send(:some_method)
+#   o.some_method
+#   # above are equivalent
+#
+#   current_user.username
+#   current_user.try(:username)
+# end
+#
+# def endpoint
+#   return not_found if !endpoint_map[path]
+#   self.send(endpoint_map[path])
+#   self.send(:method_name) #symbol method
+# endpoint_map[path].call # lambda if instead of symbol, ->
+# end

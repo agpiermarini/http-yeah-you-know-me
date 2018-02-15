@@ -6,60 +6,42 @@ require 'pry'
 
 class Responder
   attr_reader :path,
-              :verb
+              :verb,
+              :request
 
   def initialize(request, count)
     @request = request
-    @verb    = request.verb
-    @path    = request.path
     @count   = count
     @game    = nil
   end
 
-  def call_some_method(method)
-    "somethin_typed"
-    # method will be a string
-    method_name = method.to_sym
-    self.send(method_name)
-    o = Object.new
-    o.send(:some_method)
-    o.some_method
-    # above are equivalent
-
-    current_user.username
-    current_user.try(:username)
-  end
-
-
-
   def endpoint_map
     {
       "/" => :debug_endpoint,
-      ...
+      "/hello" => :hello_endpoint,
+      "/datetime" => :datetime_endpoint,
+      "/shutdown" => :shutdown_endpoint,
+      "/game" => :game_endpoint,
+      "/start_game" => :start_game_endpoint,
+      "/word_search" => :word_search_endpoint
     }
   end
 
   def endpoint
-    return not_found if !endpoint_map[path]
-    self.send(endpoint_map[path])
-    self.send(:method_name) #symbol method
-  endpoint_map[path].call # lambda
-  end
-
-  def endpoint  #build out alternatives for get/post...e.g. word_search does not work with post?
-    case path
-    when "/"            then debug_endpoint
-    when "/hello"       then hello_endpoint
-    when "/datetime"    then datetime_endpoint
-    when "/shutdown"    then shutdown_endpoint
-    when "/game"        then game_endpoint
-    when "/start_game"  then start_game_endpoint
-    when "/word_search" then word_search_endpoint
-    else not_found end
+    return not_found if !endpoint_map[request.path]
+    self.send(endpoint_map[request.path])
   end
 
   def debug_endpoint
-    @request.debug_info
+    "</pre>" + ("\n") + ("\t") +
+    "Verb:    #{request.verb}
+    Path:     #{request.path}
+    Protocol: #{request.protocol}
+    Host:     #{request.host}
+    Port:     #{request.port}
+    Origin:   #{request.origin}
+    Accept:   #{request.encoding},#{request.accept};#{request.language}" +
+    "</pre>"
   end
 
   def hello_endpoint
@@ -75,17 +57,18 @@ class Responder
   end
 
   def start_game_endpoint
-    request.get? ? start_game : not_found
+    return start_game if request.get?
+    not_found
   end
 
   def game_endpoint
     return @game.get  if request.get?
-    return @game.post if post?
+    return @game.post if request.post?
     not_found
   end
 
   def word_search_endpoint
-    return search_result if get?
+    return search_result if request.get?
     not_found
   end
 
@@ -99,7 +82,6 @@ class Responder
     end.join(",\n")
   end
 
-
   def start_game
     @game = Game.new
     @game.welcome
@@ -110,12 +92,18 @@ class Responder
     return "a" if words.include?(word.downcase)
     "not a"
   end
-
-  def get?
-    verb == "GET"
-  end
-
-  def post?
-    @verb == "POST"
-  end
 end
+
+
+
+# def endpoint  #build out alternatives for get/post...e.g. word_search does not work with post?
+#   case path
+#   when "/"            then debug_endpoint
+#   when "/hello"       then hello_endpoint
+#   when "/datetime"    then datetime_endpoint
+#   when "/shutdown"    then shutdown_endpoint
+#   when "/game"        then game_endpoint
+#   when "/start_game"  then start_game_endpoint
+#   when "/word_search" then word_search_endpoint
+#   else not_found end
+# end

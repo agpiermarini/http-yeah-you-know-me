@@ -4,12 +4,15 @@ require './lib/request_parser'
 require './lib/responder'
 
 class Server
+  attr_reader :request,
+              :responder
   attr_accessor :client
 
   def initialize
     @server = TCPServer.new(9292)
-    @count  = 0
     @request = RequestParser.new
+    @responder = Responder.new(nil)
+    @count  = 0
   end
 
   def start
@@ -20,7 +23,7 @@ class Server
         request_lines << line.chomp
     end
     @count += 1
-    @request = RequestParser.new(request_lines)               # move up? self, so as to be able to call server.request_lines?
+    request.parse_all
     puts "Got this request:\n\n#{request_lines.inspect}\n\n"
     response
     start if @request.path != "/shutdown"

@@ -40,8 +40,41 @@ class RequestParserTest < Minitest::Test
                        "Accept-Language: en-US,en;q=0.9"]
   end
 
-  def test_it_receives_get_request
+  def test_it_parses_verb_path_protocol
+    parser = RequestParser.new(@search_request)
+    parser.parse_verb_path_protocol
+
+    assert_equal "GET", parser.verb
+    assert_equal "/word_search", parser.path
+    assert_equal "HTTP/1.1", parser.protocol
+    assert_equal "word=hello&word2=goodbye", parser.parameters
+  end
+
+  def test_it_parses_parameters
+    parser = RequestParser.new(@search_request)
+    parser.parse_verb_path_protocol
+    parser.parse_parameters
+
+    expected = [["word", "hello"], ["word2", "goodbye"]]
+
+    assert_equal expected, parser.parameters
+  end
+
+  def test_it_parses_remainder
+    parser = RequestParser.new(@search_request)
+    parser.parse_verb_path_protocol
+    parser.parse_remainder
+
+    assert_equal "127.0.0.1", parser.host
+    assert_equal "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop", parser.origin
+    assert_equal "gzip, deflate, br", parser.encoding
+    assert_equal "*/*", parser.accept
+    assert_equal "en-US,en;q=0.9", parser.language
+  end
+
+  def test_it_parses_entire_get_request
     parser = RequestParser.new(@get_request)
+    parser.parse_all
 
     assert_equal "GET", parser.verb
     assert_equal "/", parser.path
@@ -49,13 +82,14 @@ class RequestParserTest < Minitest::Test
     assert_equal "127.0.0.1", parser.host
     assert_equal "9292", parser.port
     assert_equal "127.0.0.1", parser.origin
-    assert_equal "gzip, deflate, br", parser.accept_encoding
+    assert_equal "gzip, deflate, br", parser.encoding
     assert_equal "*/*", parser.accept
-    assert_equal "en-US,en;q=0.9", parser.accept_language
+    assert_equal "en-US,en;q=0.9", parser.language
   end
 
-  def test_it_receives_post_request
+  def test_it_parses_entire_post_request
     parser = RequestParser.new(@post_request)
+    parser.parse_all
 
     assert_equal "POST", parser.verb
     assert_equal "/", parser.path
@@ -63,56 +97,24 @@ class RequestParserTest < Minitest::Test
     assert_equal "127.0.0.1", parser.host
     assert_equal "9292", parser.port
     assert_equal "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop", parser.origin
-    assert_equal "gzip, deflate, br", parser.accept_encoding
+    assert_equal "gzip, deflate, br", parser.encoding
     assert_equal "*/*", parser.accept
-    assert_equal "en-US,en;q=0.9", parser.accept_language
+    assert_equal "en-US,en;q=0.9", parser.language
   end
 
-  def test_it_prints_debug_information_get
+  def test_get?
     parser = RequestParser.new(@get_request)
+    parser.parse_all
 
-    expected = "</pre>" + ("\n") + ("\t") +
-    "Verb:    GET
-    Path:     /
-    Protocol: HTTP/1.1
-    Host:     127.0.0.1
-    Port:     9292
-    Origin:   127.0.0.1
-    Accept:   gzip, deflate, br,*/*;en-US,en;q=0.9" +
-    "</pre>"
-
-     assert_equal expected, parser.debug_info
+    assert parser.get?
+    refute parser.post?
   end
 
-  def test_it_prints_debug_information_post
+  def test_post?
     parser = RequestParser.new(@post_request)
-    expected = "</pre>" + ("\n") + ("\t") +
-    "Verb:    POST
-    Path:     /
-    Protocol: HTTP/1.1
-    Host:     127.0.0.1
-    Port:     9292
-    Origin:   chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
-    Accept:   gzip, deflate, br,*/*;en-US,en;q=0.9" +
-    "</pre>"
+    parser.parse_all
 
-     assert_equal expected, parser.debug_info
+    assert parser.post?
+    refute  parser.get?
   end
-
-  def test_it_isolates_parameters #delete this test if keeping path/param variable setting function in initialize
-    skip
-    parser = RequestParser.new(@search_request)
-
-    assert_equal "word=hello&word2=goodbye", parser.parameters
-  end
-
-  def test_it_parses_parameters
-    skip
-    parser = RequestParser.new(@search_request)
-    expected = [["word", "hello"], ["word2", "goodbye"]]
-
-    assert_equal expected, parser.parse_parameters
-  end
-
-  # build out test for variable set function
 end
