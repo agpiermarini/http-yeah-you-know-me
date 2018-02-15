@@ -41,16 +41,14 @@ class Responder
   end
 
   def debug_endpoint
-    # binding.pry
-    "</pre>" + ("\n") + ("\t") +
+    ("\n") + ("\t") +
     "Verb:    #{request.verb}
     Path:     #{request.path}
     Protocol: #{request.protocol}
     Host:     #{request.host}
     Port:     #{request.port}
     Origin:   #{request.origin}
-    Accept:   #{request.encoding},#{request.accept};#{request.language}" +
-    "</pre>"
+    Accept:   #{request.encoding},#{request.accept};#{request.language}"
   end
 
   def hello_endpoint

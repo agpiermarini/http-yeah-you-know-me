@@ -1,11 +1,11 @@
 class Game
   attr_reader :number,
-              :total_guesses,
+              :guess_counter,
               :last_guess
 
   def initialize
     @number = rand(0..100)
-    @guesses = []
+    @guess_counter = 0
     @last_guess  = 0
   end
 
@@ -14,7 +14,8 @@ class Game
   end
 
   def get
-    "Total guesses: #{total_guesses}" + ("\n") +
+    return "You haven't guessed yet!" if guess_counter == 0
+    "Total guesses: #{guess_counter}" + ("\n") +
     "Your last guess was: #{last_guess}, which is #{guess_feedback}"
   end
 
@@ -24,13 +25,8 @@ class Game
     "correct! Congratulations!"
   end
 
-  def total_guesses
-    @guesses.length
-  end
-
-  def post(guess = nil)
-    @last_guess = guess if !guess.nil?
-    @guesses << @last_guess
-    "get"
+  def post(guess)
+    @last_guess = guess
+    @guess_counter += 1
   end
 end

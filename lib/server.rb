@@ -23,7 +23,6 @@ class Server
         request_lines << line.chomp
     end
     request.parse_all(request_lines)
-    # binding.pry
     puts "Got this request:\n\n#{request_lines.inspect}\n\n"
     response
     start if request.path != "/shutdown"
@@ -32,7 +31,7 @@ class Server
   def response
     responder.endpoint
     puts "Sending response.\n"
-    response = "<pre>" + "#{responder.endpoint}" + "<pre>"
+    response = "<pre>" + "#{responder.endpoint}" + "</pre>"
     output = "<html><head></head><body>#{response}</body></html>"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
@@ -41,6 +40,6 @@ class Server
                "content-length: #{output.length}\r\n\r\n"].join("\r\n")
     client.puts headers
     client.puts output
-    client.close #unless game is not nil? should i keep cycle open?
+    client.close
   end
 end
