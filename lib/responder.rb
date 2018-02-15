@@ -28,10 +28,11 @@ class Responder
 
   def endpoint
     return not_found if !endpoint_map[request.path]
-    self.send(endpoint_map[request.path])
+    send(endpoint_map[request.path])
   end
 
   def debug_endpoint
+    # binding.pry
     "</pre>" + ("\n") + ("\t") +
     "Verb:    #{request.verb}
     Path:     #{request.path}
@@ -56,7 +57,7 @@ class Responder
   end
 
   def start_game_endpoint
-    return start_game if request.get?
+    return start_game if request.post?
     not_found
   end
 

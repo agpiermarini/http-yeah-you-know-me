@@ -14,11 +14,13 @@ class Game
   end
 
   def guess(number)
+    @guesses = []
     @last_guess = number
     @total_guesses += 1
   end
 
-  def get
+  def get(guess = nil)
+    @guesses << @last_guess = guess if !guess.nil?
     "Total guesses: #{total_guesses}" + ("\n")
     "Your last guess was: #{last_guess}, which is #{guess_feedback}"
   end

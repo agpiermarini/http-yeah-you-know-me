@@ -9,11 +9,11 @@ class Server
               :responder
 
   attr_accessor :client
-  
+
   def initialize
     @server = TCPServer.new(9292)
     @request = RequestParser.new
-    @responder = Responder.new(@request)
+    @responder = Responder.new(self)        # passing the requestparser object to gain access to methods in responder...is there a better way?
   end
 
   def start
@@ -24,6 +24,7 @@ class Server
         request_lines << line.chomp
     end
     request.parse_all(request_lines)
+    # binding.pry
     puts "Got this request:\n\n#{request_lines.inspect}\n\n"
     response
     start if request.path != "/shutdown"

@@ -12,8 +12,10 @@ class RequestParser
               :encoding,
               :accept,
               :language,
-              :count,
-              :parameters
+              :parameters,
+              :content_length
+
+  attr_accessor :count
 
   def initialize
     @count = 0
@@ -52,7 +54,12 @@ class RequestParser
     when "accept"          then @accept = content
     when "accept-encoding" then @encoding = content
     when "accept-language" then @language = content
+    when "content-length"  then @content_length = content.to_i
     else nil end
+  end
+
+  def parse_guess
+    nil
   end
 
   def get?
