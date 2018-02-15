@@ -15,8 +15,8 @@ class Game
 
   def get
     # return "You haven't guessed yet!" if guess_counter == 0
-    "Total guesses: #{guess_counter}" + ("\n") +
-    "Your last guess was: #{previous_guess}, which is #{evaluate_guess}"
+    "#{previous_guess} is #{evaluate_guess}" + ("\n") +
+    "Total guesses: #{guess_counter}"
   end
 
   def evaluate_guess
@@ -28,6 +28,6 @@ class Game
   def post(guess)
     @previous_guess = guess
     @guess_counter += 1
-    #REDIRECT????
+    "TEST"
   end
 end

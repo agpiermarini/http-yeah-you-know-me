@@ -58,7 +58,7 @@ class RequestParser
     else nil end
   end
 
-  def get?
+  def get?            #get rid of this...just branch in responder
     verb == "GET"
   end
 

@@ -1,7 +1,5 @@
-require 'minitest/autorun'
-require 'minitest/pride'
+require './test/test_helper'
 require './lib/game'
-require 'pry'
 
 class GameTest < Minitest::Test
   def test_it_exists
@@ -13,7 +11,6 @@ class GameTest < Minitest::Test
   def test_it_wishes_user_good_luck
     game = Game.new
 
-    assert_equal "Good luck!", game.welcome
+    assert_equal 'Good luck!', game.welcome
   end
-
 end
