@@ -2,6 +2,7 @@ require 'socket'
 require 'Date'
 require 'Time'
 require './lib/request_parser'
+require './lib/word_search'
 require './lib/game'
 require 'pry'
 
@@ -35,7 +36,7 @@ class Responder
     }
   end
 
-  def endpoint
+  def select_endpoint
     return not_found if !endpoint_map[request.path]
     send(endpoint_map[request.path])
   end
@@ -68,6 +69,12 @@ class Responder
     not_found
   end
 
+  def word_search_endpoint
+    word_search = WordSearch.new
+    return word_search.search_result(request.parameters) if request.get?
+    not_found
+  end
+
   def game_endpoint
     return @game.get  if request.get?
     return submit_guess if request.post?
@@ -87,31 +94,27 @@ class Responder
     @game.post(guess)
   end
 
-  def word_search_endpoint
-    return search_result if request.get?
-    not_found
-  end
 
   def not_found
     "404: Not Found :("
   end
 
-  def search_result
-    request.parameters.map do |word|
-       "#{word[1].upcase} is #{include_word?(word[1])} known word"
-    end.join(",\n")
-  end
+  # def search_result
+  #   request.parameters.map do |word|
+  #      "#{word[1].upcase} is #{include_word?(word[1])} known word"
+  #   end.join(",\n")
+  # end
 
   def start_game
     @game = Game.new
     @game.welcome
   end
 
-  def include_word?(word)
-    words = File.read("/usr/share/dict/words")
-    return "a" if words.include?(word.downcase)
-    "not a"
-  end
+  # def include_word?(word)
+  #   words = File.read("/usr/share/dict/words")
+  #   return "a" if words.include?(word.downcase)
+  #   "not a"
+  # end
 end
 
 

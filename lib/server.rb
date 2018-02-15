@@ -29,9 +29,9 @@ class Server
   end
 
   def response
-    responder.endpoint
+    responder.select_endpoint
     puts "Sending response.\n"
-    response = "<pre>" + "#{responder.endpoint}" + "</pre>"
+    response = "<pre>" + "#{responder.select_endpoint}" + "</pre>"
     output = "<html><head></head><body>#{response}</body></html>"
     headers = ["http/1.1 200 ok",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
