@@ -6,9 +6,8 @@ require './lib/responder'
 class Server
   attr_reader :server,
               :request,
-              :responder
-
-  attr_accessor :client
+              :responder,
+              :client
 
   def initialize
     @server = TCPServer.new(9292)

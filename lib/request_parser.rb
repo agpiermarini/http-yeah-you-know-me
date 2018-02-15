@@ -58,10 +58,6 @@ class RequestParser
     else nil end
   end
 
-  def parse_guess
-    nil
-  end
-
   def get?
     verb == "GET"
   end

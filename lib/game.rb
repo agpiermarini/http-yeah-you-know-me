@@ -5,7 +5,7 @@ class Game
 
   def initialize
     @number = rand(0..100)
-    @total_guesses  = 0
+    @guesses = []
     @last_guess  = 0
   end
 
@@ -13,15 +13,8 @@ class Game
     "Good luck!"
   end
 
-  def guess(number)
-    @guesses = []
-    @last_guess = number
-    @total_guesses += 1
-  end
-
-  def get(guess = nil)
-    @guesses << @last_guess = guess if !guess.nil?
-    "Total guesses: #{total_guesses}" + ("\n")
+  def get
+    "Total guesses: #{total_guesses}" + ("\n") +
     "Your last guess was: #{last_guess}, which is #{guess_feedback}"
   end
 
@@ -31,6 +24,13 @@ class Game
     "correct! Congratulations!"
   end
 
-  def post
+  def total_guesses
+    @guesses.length
+  end
+
+  def post(guess = nil)
+    @last_guess = guess if !guess.nil?
+    @guesses << @last_guess
+    "get"
   end
 end

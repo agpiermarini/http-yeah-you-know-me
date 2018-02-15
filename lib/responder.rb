@@ -1,3 +1,4 @@
+require 'socket'
 require 'Date'
 require 'Time'
 require './lib/request_parser'
@@ -7,11 +8,19 @@ require 'pry'
 class Responder
   attr_reader :path,
               :verb,
-              :request
+              :server
 
-  def initialize(request)
-    @request = request
-    @game    = nil
+  def initialize(server)
+    @server = server
+    @game = nil
+  end
+
+  def request
+    server.request
+  end
+
+  def client
+    server.client
   end
 
   def endpoint_map
@@ -63,9 +72,21 @@ class Responder
 
   def game_endpoint
     return @game.get  if request.get?
-    return @game.post if request.post?
+    return submit_guess if request.post?
     rescue
     "You must first go to http://127.0.0.1:9292/start_game to start a game."
+  end
+
+  def read_body
+    client.read(request.content_length)
+  end
+
+  def guess
+    read_body.split[-2].to_i
+  end
+
+  def submit_guess
+    @game.post(guess)
   end
 
   def word_search_endpoint
