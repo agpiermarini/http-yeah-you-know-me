@@ -20,7 +20,7 @@ class Server
     request_lines = []
     @client = server.accept
     while line = client.gets and !line.chomp.empty?
-        request_lines << line.chomp
+      request_lines << line.chomp
     end
     request.parse_all(request_lines)
     puts "Got this request:\n\n#{request_lines.inspect}\n\n"
@@ -29,7 +29,6 @@ class Server
   end
 
   def response
-    puts "Sent this response:\n"
     response = "<pre>" + "#{responder.select_endpoint}" + "</pre>"
     output = "<html><head></head><body>#{response}</body></html>"
     headers = ["http/1.1 #{responder.status_code}",
@@ -38,7 +37,7 @@ class Server
                "server: ruby",
                "content-type: text/html; charset=iso-8859-1",
                "content-length: #{output.length}\r\n\r\n"].compact.join("\r\n")
-    puts headers
+    puts "Sent this response:\n\n#{headers}\n\n"
     client.puts headers
     client.puts output
     client.close

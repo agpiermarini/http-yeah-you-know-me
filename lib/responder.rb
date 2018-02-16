@@ -1,13 +1,15 @@
-require 'socket'
-require 'Date'
+require './lib/endpoints'
 require './lib/status_codes'
 require './lib/request_parser'
 require './lib/word_search'
 require './lib/game'
+require 'socket'
+require 'Date'
 require 'pry'
 
 class Responder
   include StatusCodes
+  include Endpoints
   attr_reader :path,
               :verb,
               :server,
@@ -30,19 +32,8 @@ class Responder
   end
 
   def select_endpoint
-    case verb_path
-    when 'GET/' then debug_endpoint
-    when 'POST/' then debug_endpoint
-    when 'GET/hello' then hello_endpoint
-    when 'GET/datetime' then datetime_endpoint
-    when 'GET/shutdown' then shutdown_endpoint
-    when 'GET/word_search' then word_search_endpoint
-    when 'GET/game' then game_get_endpoint
-    when 'POST/game' then game_post_endoint
-    when 'POST/start_game' then start_game_endpoint
-    when 'POST/force_error' then force_error
-    when 'GET/force_error' then force_error
-    end
+    return default_endpoint unless ENDPOINT_MAP[verb_path]
+    send(ENDPOINT_MAP[verb_path])
   end
 
   def verb_path
@@ -51,7 +42,7 @@ class Responder
 
   def debug_endpoint
     @status_code = STATUS_CODE[:status_200]
-    "Verb:    #{request.verb}
+    "\n\tVerb:    #{request.verb}
     Path:     #{request.path}
     Protocol: #{request.protocol}
     Host:     #{request.host}
@@ -61,6 +52,7 @@ class Responder
   end
 
   def hello_endpoint
+    @status_code = STATUS_CODE[:status_200]
     "Hello, World! (#{request.count})"
   end
 
@@ -82,8 +74,8 @@ class Responder
 
   def start_game_endpoint
     return @status_code = STATUS_CODE[:status_403] unless @game.nil?
-    @status_code = STATUS_CODE[:status_301]
-    @location = "location: /game"
+    @status_code = STATUS_CODE[:status_200]
+    # @location = "http://#{request.host}:#{request.port}/game"
     start_game
   end
 
@@ -94,15 +86,14 @@ class Responder
   end
 
   def game_post_endoint
-    @status_code = STATUS_CODE[:status_301]
-    @location = "location: /game"
-    # binding.pry
+    @status_code = STATUS_CODE[:status_302]
+    @location = "Location: http://#{request.host}:#{request.port}/game"
     submit_guess
   end
 
   def force_error
     @status_code = STATUS_CODE[:status_500]
-    'ERROR'
+    raise_exception
   end
 
   def start_game
@@ -122,26 +113,11 @@ class Responder
   def default_endpoint
     @status_code = STATUS_CODE[:status_404]
   end
+
+  def raise_exception
+    raise 'Something terrible has happened!'
+  rescue StandardError => exception
+    exception.backtrace.join("\n")
+    # raise
+  end
 end
-
-
-# def endpoint_map
-#   {
-#     'GET/' => :debug_endpoint,
-#     'POST/' => :debug_endpoint,
-#     'GET/hello' => :hello_endpoint,
-#     'GET/datetime' => :datetime_endpoint,
-#     'GET/shutdown' => :shutdown_endpoint,
-#     'GET/word_search' => :word_search_endpoint,
-#     'GET/game' => :game_get_endpoint,
-#     'POST/game' => :game_post_endoint,
-#     'POST/start_game' => :start_game_endpoint,
-#     'POST/force_error' => :force_error,
-#     'GET/force_error' => :force_error
-#   }
-# end
-
-# def select_endpoint
-#   return default_endpoint unless endpoint_map[verb_path]
-#   send(endpoint_map[verb_path])
-# end

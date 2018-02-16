@@ -15,7 +15,6 @@ class ResponderTest < Minitest::Test
   end
 
   def test_it_exists
-    skip
     responder = Responder.new(nil)
 
     assert_instance_of Responder, responder
@@ -63,20 +62,46 @@ class ResponderTest < Minitest::Test
   def test_it_handles_start_game_endpoint
     request = Faraday.post 'http://127.0.0.1:9292/start_game'
 
-    assert request.body.include?('Good luck!')
+    assert request.body.include?('403') || request.body.include?('Good luck!')
   end
 
   def test_it_handles_get_game_endpoint
+    skip
     Faraday.post 'http://127.0.0.1:9292/start_game'
     request = Faraday.get 'http://127.0.0.1:9292/game'
 
-    assert request.body.include?('Total guesses:')
-    assert request.body.include?('Guess again!')
+    assert request.body.include?("You haven't guessed yet!" || "Total guesses:")
+  end
+
+  def test_it_handles_post_game_endpoint
+    Faraday.post 'http://127.0.0.1:9292/start_game'
+    request = Faraday.post 'http://127.0.0.1:9292/game'
+
+    refute request.body.empty?
   end
 
   def test_it_handles_all_other_endpoints
     request = Faraday.get 'http://127.0.0.1:9292/doesnotexist'
 
-    assert request.body.include?('404: Not Found :(')
+    assert request.body.include?('404 Not Found')
+  end
+
+  def test_it_handles_force_error
+    request = Faraday.get 'http://127.0.0.1:9292/force_error'
+
+    assert request.body.include?('force_error')
+  end
+
+  def test_it_can_start_game
+    responder = Responder.new(nil)
+
+    assert_equal "Good luck!", responder.start_game
+  end
+
+  def test_datetime_endpoint_method
+    responder = Responder.new(nil)
+    expected = Date.today.strftime('%I:%M%p on %A, %B %-d, %Y')
+
+    assert_equal expected, responder.datetime_endpoint
   end
 end
