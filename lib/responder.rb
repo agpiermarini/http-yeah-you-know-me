@@ -74,12 +74,13 @@ class Responder
   end
 
   def game_get_endpoint
-    return "You haven't started a game yet!" if @game.nil?
     @status_code = STATUS_CODE[:status_200]
+    return "You haven't started a game yet!" if @game.nil?
     @game.get
   end
 
   def game_post_endoint
+    @status_code = STATUS_CODE[:status_200]
     return "You haven't started a game yet!" if @game.nil?
     @status_code = STATUS_CODE[:status_302]
     @location = "Location: http://#{request.host}:#{request.port}/game"
