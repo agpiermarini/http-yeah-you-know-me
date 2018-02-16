@@ -87,9 +87,20 @@ class Responder
     submit_guess
   end
 
+  def default_endpoint
+    @status_code = STATUS_CODE[:status_404]
+  end
+
   def force_error
     @status_code = STATUS_CODE[:status_500]
     raise_exception
+  end
+
+  def raise_exception
+    raise 'Something terrible has happened!'
+  rescue StandardError => exception
+    exception.backtrace.join("\n")
+    # raise
   end
 
   def start_game
@@ -104,17 +115,6 @@ class Responder
 
   def submit_guess
     @game.post(read_guess)
-  end
-
-  def default_endpoint
-    @status_code = STATUS_CODE[:status_404]
-  end
-
-  def raise_exception
-    raise 'Something terrible has happened!'
-  rescue StandardError => exception
-    exception.backtrace.join("\n")
-    # raise
   end
 
   def new_game?

@@ -42,10 +42,10 @@ class GameTest < Minitest::Test
     game = Game.new
 
     game.post(101)
-    assert_equal "too high. Guess again!", game.evaluate_guess
+    assert_equal 'too high. Guess again!', game.evaluate_guess
 
     game.post(-1)
-    assert_equal "too low. Guess again!", game.evaluate_guess
+    assert_equal 'too low. Guess again!', game.evaluate_guess
   end
 
   def test_game_returns_string_if_no_guesses
