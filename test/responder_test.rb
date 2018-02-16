@@ -3,11 +3,6 @@ require './lib/request_parser'
 require './lib/responder'
 
 class ResponderTest < Minitest::Test
-  def setup
-    @debug_info =
-    "Verb:  GET\nPath:  /\nProtocol: HTTP/1.1\nHost:     127.0.0.1\nPort:     9292\nOrigin:   127.0.0.1\nAccept:   gzip;q=1.0,deflate;q=0.6,identity;q=0.3,*/*;"
-  end
-
   def test_it_exists
     responder = Responder.new(nil)
 
@@ -17,7 +12,11 @@ class ResponderTest < Minitest::Test
   def test_it_handles_no_endpoint
     request = Faraday.get 'http://127.0.0.1:9292/'
 
-    assert request.body.include?(@debug_info)
+    assert request.body.include?("GET")
+    assert request.body.include?("127.0.0.1")
+    assert request.body.include?("/")
+    assert request.body.include?("9292")
+    assert request.body.include?("gzip;q=1.0,deflate;q=0.6,identity;q=0.3")
   end
 
   def test_it_handles_hello_endpoint
