@@ -5,13 +5,7 @@ require './lib/responder'
 class ResponderTest < Minitest::Test
   def setup
     @debug_info =
-      'Verb:    GET
-    Path:     /
-    Protocol: HTTP/1.1
-    Host:     127.0.0.1
-    Port:     9292
-    Origin:   127.0.0.1
-    Accept:   gzip;q=1.0,deflate;q=0.6,identity;q=0.3,*/*'
+    "Verb:  GET\nPath:  /\nProtocol: HTTP/1.1\nHost:     127.0.0.1\nPort:     9292\nOrigin:   127.0.0.1\nAccept:   gzip;q=1.0,deflate;q=0.6,identity;q=0.3,*/*;"
   end
 
   def test_it_exists

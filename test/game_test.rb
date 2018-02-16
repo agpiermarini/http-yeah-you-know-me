@@ -51,7 +51,7 @@ class GameTest < Minitest::Test
   def test_game_returns_string_if_no_guesses
     game = Game.new
 
-    assert_equal "You haven't guessed yet!", game.get
+    assert_equal "Get guessing!", game.get
 
     game.post(-1)
     assert_equal "-1 is too low. Guess again!\nTotal guesses: 1", game.get
