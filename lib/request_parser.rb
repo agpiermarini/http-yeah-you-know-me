@@ -12,9 +12,8 @@ class RequestParser
               :encoding,
               :accept,
               :language,
-              :content_length
-
-  attr_accessor :count
+              :content_length,
+              :count
 
   def initialize
     @count = 0

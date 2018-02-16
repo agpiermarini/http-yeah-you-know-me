@@ -12,11 +12,11 @@ class ResponderTest < Minitest::Test
   def test_it_handles_no_endpoint
     request = Faraday.get 'http://127.0.0.1:9292/'
 
-    assert request.body.include?("GET")
-    assert request.body.include?("127.0.0.1")
-    assert request.body.include?("/")
-    assert request.body.include?("9292")
-    assert request.body.include?("gzip;q=1.0,deflate;q=0.6,identity;q=0.3")
+    assert request.body.include?('GET')
+    assert request.body.include?('127.0.0.1')
+    assert request.body.include?('/')
+    assert request.body.include?('9292')
+    assert request.body.include?('gzip;q=1.0,deflate;q=0.6,identity;q=0.3')
   end
 
   def test_it_handles_hello_endpoint
@@ -88,7 +88,7 @@ class ResponderTest < Minitest::Test
   def test_it_can_start_game
     responder = Responder.new(nil)
 
-    assert_equal "Good luck!", responder.start_game
+    assert_equal 'Good luck!', responder.start_game
   end
 
   def test_datetime_endpoint_method
