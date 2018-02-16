@@ -42,13 +42,7 @@ class Responder
 
   def debug_endpoint
     @status_code = STATUS_CODE[:status_200]
-    "\n\tVerb:    #{request.verb}
-    Path:     #{request.path}
-    Protocol: #{request.protocol}
-    Host:     #{request.host}
-    Port:     #{request.port}
-    Origin:   #{request.origin}
-    Accept:   #{request.encoding},#{request.accept};#{request.language}"
+    "Verb:  #{request.verb}\nPath:  #{request.path}\nProtocol: #{request.protocol}\nHost:     #{request.host}\nPort:     #{request.port}\nOrigin:   #{request.origin}\nAccept:   #{request.encoding},#{request.accept};#{request.language}"
   end
 
   def hello_endpoint
@@ -74,18 +68,19 @@ class Responder
 
   def start_game_endpoint
     return @status_code = STATUS_CODE[:status_403] unless @game.nil?
-    @status_code = STATUS_CODE[:status_200]
-    # @location = "http://#{request.host}:#{request.port}/game"
+    @status_code = STATUS_CODE[:status_301]
+    @location = "location: http://#{request.host}:#{request.port}/game"
     start_game
   end
 
   def game_get_endpoint
-    return "Start game with a post request to /start_game!" if @game.nil?
+    return "You haven't started a game yet!" if @game.nil?
     @status_code = STATUS_CODE[:status_200]
     @game.get
   end
 
   def game_post_endoint
+    return "You haven't started a game yet!" if @game.nil?
     @status_code = STATUS_CODE[:status_302]
     @location = "Location: http://#{request.host}:#{request.port}/game"
     submit_guess
@@ -119,5 +114,21 @@ class Responder
   rescue StandardError => exception
     exception.backtrace.join("\n")
     # raise
+  end
+
+  def new_game?
+    verb_path == "POST/start_game" && @game.guess_counter.zero?
+  end
+
+  def game_post?
+    verb_path == "POST/game" && !@game.nil?
+  end
+
+  def status_location
+    if new_game? || game_post?
+      "#{@status_code},\n#{@location}"
+    else
+      "#{@status_code}"
+    end
   end
 end

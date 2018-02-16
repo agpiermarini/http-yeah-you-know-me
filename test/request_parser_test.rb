@@ -18,7 +18,7 @@ class RequestParserTest < Minitest::Test
                      'Connection: keep-alive',
                      'Content-Length: 0',
                      'Cache-Control: no-cache',
-                     'Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop',
+                     'Origin: chrome-extension://fhbjgb',
                      'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
                      'Postman-Token: 76f1ee57-3393-3121-185a-7e9176c3fbfb',
                      'Accept: */*',
@@ -30,7 +30,7 @@ class RequestParserTest < Minitest::Test
                        'Connection: keep-alive',
                        'Content-Length: 0',
                        'Cache-Control: no-cache',
-                       'Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop',
+                       'Origin: chrome-extension://fhbjgb',
                        'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
                        'Postman-Token: 76f1ee57-3393-3121-185a-7e9176c3fbfb',
                        'Accept: */*',
@@ -64,7 +64,7 @@ class RequestParserTest < Minitest::Test
     parser.parse_remainder(@search_request)
 
     assert_equal '127.0.0.1', parser.host
-    assert_equal 'chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop', parser.origin
+    assert_equal 'chrome-extension://fhbjgb', parser.origin
     assert_equal 'gzip, deflate, br', parser.encoding
     assert_equal '*/*', parser.accept
     assert_equal 'en-US,en;q=0.9', parser.language
@@ -94,25 +94,9 @@ class RequestParserTest < Minitest::Test
     assert_equal 'HTTP/1.1', parser.protocol
     assert_equal '127.0.0.1', parser.host
     assert_equal '9292', parser.port
-    assert_equal 'chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop', parser.origin
+    assert_equal 'chrome-extension://fhbjgb', parser.origin
     assert_equal 'gzip, deflate, br', parser.encoding
     assert_equal '*/*', parser.accept
     assert_equal 'en-US,en;q=0.9', parser.language
-  end
-
-  def test_get?
-    parser = RequestParser.new
-    parser.parse_all(@get_request)
-
-    assert parser.get?
-    refute parser.post?
-  end
-
-  def test_post?
-    parser = RequestParser.new
-    parser.parse_all(@post_request)
-
-    assert parser.post?
-    refute parser.get?
   end
 end

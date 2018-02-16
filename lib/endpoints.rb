@@ -6,6 +6,7 @@ module Endpoints
       'GET/hello' => :hello_endpoint,
       'GET/datetime' => :datetime_endpoint,
       'GET/shutdown' => :shutdown_endpoint,
+      'POST/shutdown' => :shutdown_endpoint,
       'GET/word_search' => :word_search_endpoint,
       'GET/game' => :game_get_endpoint,
       'POST/game' => :game_post_endoint,

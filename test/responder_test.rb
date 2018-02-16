@@ -5,7 +5,7 @@ require './lib/responder'
 class ResponderTest < Minitest::Test
   def setup
     @debug_info =
-    'Verb:    GET
+      'Verb:    GET
     Path:     /
     Protocol: HTTP/1.1
     Host:     127.0.0.1
