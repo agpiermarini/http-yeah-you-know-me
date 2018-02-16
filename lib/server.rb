@@ -12,32 +12,31 @@ class Server
   def initialize
     @server = TCPServer.new(9292)
     @request = RequestParser.new
-    @responder = Responder.new(self)        # passing the requestparser object to gain access to methods in responder...is there a better way?
+    @responder = Responder.new(self)
   end
 
-  def start
+  def request_loop
     puts "Awaiting request..."
     request_lines = []
     @client = server.accept
     while line = client.gets and !line.chomp.empty?
-        request_lines << line.chomp
+      request_lines << line.chomp
     end
     request.parse_all(request_lines)
     puts "Got this request:\n\n#{request_lines.inspect}\n\n"
     response
-    start if request.path != "/shutdown"
+    request_loop if request.path != "/shutdown"
   end
 
   def response
-    responder.select_endpoint
-    puts "Sending response.\n"
     response = "<pre>" + "#{responder.select_endpoint}" + "</pre>"
     output = "<html><head></head><body>#{response}</body></html>"
-    headers = ["http/1.1 200 ok",
+    headers = ["http/1.1 #{responder.status_location}",
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                "server: ruby",
                "content-type: text/html; charset=iso-8859-1",
                "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+    puts "Sent this response:\n\n#{headers}\n\n"
     client.puts headers
     client.puts output
     client.close

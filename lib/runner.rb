@@ -1,4 +1,4 @@
 require './lib/server.rb'
 
 server = Server.new
-server.start
+server.request_loop
