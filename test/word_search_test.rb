@@ -3,7 +3,6 @@ require 'minitest/pride'
 require './lib/word_search'
 
 class WordSearchTest < Minitest::Test
-
   def test_it_exists
     word = WordSearch.new
 

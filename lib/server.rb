@@ -12,7 +12,7 @@ class Server
   def initialize
     @server = TCPServer.new(9292)
     @request = RequestParser.new
-    @responder = Responder.new(self)        # passing the requestparser object to gain access to methods in responder...is there a better way?
+    @responder = Responder.new(self)
   end
 
   def start
@@ -33,11 +33,12 @@ class Server
     puts "Sending response.\n"
     response = "<pre>" + "#{responder.select_endpoint}" + "</pre>"
     output = "<html><head></head><body>#{response}</body></html>"
-    headers = ["http/1.1 200 ok",
+    headers = ["http/1.1 #{responder.status_code}",
+               responder.location,
                "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
                "server: ruby",
                "content-type: text/html; charset=iso-8859-1",
-               "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+               "content-length: #{output.length}\r\n\r\n"].compact.join("\r\n")
     client.puts headers
     client.puts output
     client.close
